@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  demoverse:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: demoverse-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./prisma:/app/prisma
+      - ./public/uploads:/app/public/uploads
+    env_file:
+      - .env.local
+    restart: unless-stopped

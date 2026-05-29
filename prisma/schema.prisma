@@ -1,0 +1,106 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  password     String
+  role         String        @default("user") // "user" | "vendor" | "admin"
+  bookmarks    Bookmark[]
+  reviews      Review[]
+  demoRequests DemoRequest[]
+  createdAt    DateTime      @default(now())
+}
+
+model Platform {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  name          String
+  tagline       String
+  description   String
+  category      String
+  logoUrl       String?
+  coverColor    String
+  demoUrl       String?
+  demoVideoUrl  String? // uploaded demo video path
+  demoType      String        @default("embed") // "embed" | "video" | "none"
+  teamSizeFit   String // JSON array stored as string
+  pricingModel  String // "free" | "freemium" | "paid" | "custom"
+  rating        Float         @default(0)
+  reviewCount   Int           @default(0)
+  demoViewCount Int           @default(0)
+  verified      Boolean       @default(false)
+  features      Feature[]
+  pricingTiers  PricingTier[]
+  reviews       Review[]
+  bookmarks     Bookmark[]
+  demoRequests  DemoRequest[]
+  createdAt     DateTime      @default(now())
+}
+
+model Feature {
+  id          String   @id @default(cuid())
+  name        String
+  icon        String
+  description String?
+  platform    Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  platformId  String
+}
+
+model PricingTier {
+  id          String   @id @default(cuid())
+  name        String
+  price       Float?
+  period      String   @default("month")
+  features    String // JSON array stored as string
+  highlighted Boolean  @default(false)
+  platform    Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  platformId  String
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Int
+  body       String
+  role       String?
+  company    String?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  platformId String
+  createdAt  DateTime @default(now())
+}
+
+model Bookmark {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  platform   Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  platformId String
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, platformId])
+}
+
+model DemoRequest {
+  id              String   @id @default(cuid())
+  requesterName   String
+  requesterEmail  String
+  company         String
+  teamSize        String
+  useCase         String
+  preferredFormat String   @default("either") // "live" | "recorded" | "either"
+  status          String   @default("pending") // "pending" | "responded" | "fulfilled"
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId          String?
+  platform        Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+  platformId      String
+  createdAt       DateTime @default(now())
+}
