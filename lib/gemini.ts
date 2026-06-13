@@ -19,7 +19,7 @@ export async function getRecommendations(
   platformCatalog: (Platform & { features: Feature[] })[],
   userAnswers: Record<string, string>
 ): Promise<ChatBotResponse> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
 
   // Fallback if API key is not provided or is a placeholder
   if (!apiKey || apiKey === "your_key_here" || apiKey.trim() === "") {
@@ -45,7 +45,7 @@ export async function getRecommendations(
 
     return {
       recommendations,
-      followUpAnswer: "AI matchmaking is currently offline — please add your Anthropic API key to `.env.local` to enable live reasoning. In the meantime, I've matched you with our top-rated platforms!",
+      followUpAnswer: "AI matchmaking is currently offline — please add your Gemini API key to `.env` to enable live reasoning. In the meantime, I've matched you with our top-rated platforms!",
       isFallback: true,
     };
   }
@@ -89,34 +89,45 @@ ${JSON.stringify(chatHistory, null, 2)}
 Analyze the history and user answers. Make your top 3 recommendations or answer follow-up queries. Provide ONLY raw valid JSON matching the requested schema.`;
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-3-5-sonnet-20240620",
-        system: systemPrompt,
-        max_tokens: 1000,
-        messages: [
-          {
-            role: "user",
-            content: payloadContent,
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: payloadContent,
+                },
+              ],
+            },
+          ],
+          systemInstruction: {
+            parts: [
+              {
+                text: systemPrompt,
+              },
+            ],
           },
-        ],
-      }),
-    });
+          generationConfig: {
+            responseMimeType: "application/json",
+          },
+        }),
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Claude API Error Status:", response.status, errorText);
-      throw new Error(`Claude API responded with status ${response.status}`);
+      console.error("Gemini API Error Status:", response.status, errorText);
+      throw new Error(`Gemini API responded with status ${response.status}`);
     }
 
     const data = await response.json();
-    const assistantContent = data.content?.[0]?.text || "";
+    const assistantContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
     // Clean markdown code blocks if the model wrapped it in ```json ... ```
     let cleanJson = assistantContent.trim();

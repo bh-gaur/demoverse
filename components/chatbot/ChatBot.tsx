@@ -182,7 +182,7 @@ export default function ChatBot({ platforms }: ChatBotProps) {
               <Sparkles size={18} className="fill-primary-foreground animate-pulse" />
               <div>
                 <h3 className="font-bold text-sm">DemoVerse Matchmaker</h3>
-                <span className="text-[10px] text-primary-foreground/70">Powered by Claude Sonnet AI</span>
+                <span className="text-[10px] text-primary-foreground/70">Powered by Gemini 2.5 AI</span>
               </div>
             </div>
             <button
@@ -201,7 +201,7 @@ export default function ChatBot({ platforms }: ChatBotProps) {
                 <Sparkles size={36} className="text-primary mx-auto animate-bounce" />
                 <h4 className="font-bold text-base text-foreground">Find Your Perfect SaaS Match</h4>
                 <p className="text-xs text-muted-foreground max-w-[280px] mx-auto leading-relaxed">
-                  Let&apos;s answer 3 quick questions to help Claude pinpoint the best products for your workflows.
+                  Let&apos;s answer 3 quick questions to help Gemini pinpoint the best products for your workflows.
                 </p>
                 <div className="space-y-2 border-t border-border pt-4 text-left">
                   <span className="block text-xs font-bold text-muted-foreground uppercase tracking-wide">

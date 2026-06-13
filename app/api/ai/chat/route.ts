@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getRecommendations } from "@/lib/claude";
+import { getRecommendations } from "@/lib/gemini";
 import { z } from "zod";
 
 const chatRequestSchema = z.object({
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     const { messages, platformCatalog, userAnswers } = result.data;
 
-    // Call the Claude AI integration helper (which supports offline fallback internally)
+    // Call the Gemini AI integration helper (which supports offline fallback internally)
     const aiResponse = await getRecommendations(messages, platformCatalog, userAnswers);
 
     return NextResponse.json(aiResponse);

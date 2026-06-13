@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DemoVerse - B2B SaaS Discovery Marketplace
+
+DemoVerse is a premium B2B SaaS Discovery Marketplace built with Next.js. Users can explore software categories, compare platform specs side-by-side, check ratings, request or view demo videos, and chat with a Google Gemini-powered AI Matchmaker chatbot.
+
+## Tech Stack
+
+* **Frontend/Backend**: Next.js 14 (App Router)
+* **Database**: SQLite with Prisma ORM
+* **Auth**: NextAuth.js v5 (Credentials provider)
+* **AI Engine**: Google Gemini API (`gemini-2.5-flash`)
+* **Styling**: Tailwind CSS & Lucide Icons
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### 1. Environment Setup
+
+Create or configure the `.env` file in the root directory:
+
+```env
+DATABASE_URL="file:./demoverse.db"
+NEXTAUTH_SECRET="e9a263d91cfcb7ef910075d9bbd1f977c050dcfb6f9a0c4f8ab91bf41de03e67"
+AUTH_SECRET="e9a263d91cfcb7ef910075d9bbd1f977c050dcfb6f9a0c4f8ab91bf41de03e67"
+GEMINI_API_KEY="your_gemini_api_key_here"
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Generate Prisma Client
+
+To compile the database client mappings, run:
+
+```bash
+npx prisma generate
+```
+
+### 4. Run the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database Management & Access
 
-## Learn More
+This project uses an local SQLite database stored at `prisma/demoverse.db`. You can access and manage this database in a few different ways:
 
-To learn more about Next.js, take a look at the following resources:
+### 1. Prisma Studio (GUI)
+The easiest way to view, search, and edit database records is using **Prisma Studio**, an interactive database browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run the following command in your terminal:
+```bash
+npm run db:studio
+# or
+npx prisma studio
+```
+This will automatically launch the interface at [http://localhost:5555](http://localhost:5555).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. Database Seeds & Resets
+* **Reseed the Database**: If you need to populate default dummy data (users, SaaS platforms, features, reviews), run:
+  ```bash
+  npm run seed
+  ```
+* **Reset Database**: To wipe the database clean, rebuild the tables, and seed it fresh:
+  ```bash
+  npm run db:reset
+  ```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 3. Standard SQLite Viewer
+Since the database is a standard SQLite file, you can also open it in visual tools like:
+* [DB Browser for SQLite](https://sqlitebrowser.org/)
+* SQLite extensions inside your IDE
