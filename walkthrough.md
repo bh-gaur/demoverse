@@ -38,6 +38,10 @@ To prepare the repository for public release (GitHub push), we performed code se
 ## 📸 4. Verification & Testing
 
 We verified the live chatbot recommendations workflow using a browser automation subagent. 
-When queried with: `"I need a CRM for a small team"`, the Gemini 2.5 REST call resolved successfully and returned tailored marketplace suggestions immediately:
+When queried with: `"I need a CRM for a small team"`, the Gemini 2.5 REST call resolved successfully and returned tailored marketplace suggestions immediately. When followed up with a conversational greeting (`"hello"`), the chatbot responded contextually without repeating recommendations:
 
-![Live Chatbot Verification Result](/chatbot_gemini_success.png)
+````carousel
+![Initial Recommendation Results](/chatbot_gemini_success.png)
+<!-- slide -->
+![Conversational Follow-up Response](/chatbot_flow_success.png)
+````
