@@ -120,10 +120,19 @@ export default function ChatBot({ platforms }: ChatBotProps) {
 
     try {
       // Forward full history to route
-      const payloadMessages = newMessages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
+      const payloadMessages = newMessages.map((m) => {
+        let content = m.content;
+        if (m.role === "assistant" && m.recommendations && m.recommendations.length > 0) {
+          const recsText = m.recommendations
+            .map((r) => `- ${r.name} (Score: ${r.fitScore}/10): ${r.reason}`)
+            .join("\n");
+          content = `${content}\n\nRecommendations made:\n${recsText}`;
+        }
+        return {
+          role: m.role,
+          content: content,
+        };
+      });
 
       const response = await fetch("/api/ai/chat", {
         method: "POST",
